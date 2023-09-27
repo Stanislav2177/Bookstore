@@ -1,6 +1,9 @@
 package com.project.bookstore.service;
 
 import com.project.bookstore.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 public interface BookService {
@@ -13,6 +16,10 @@ public interface BookService {
     Book getARandomBook();
 
     List<Book> getAllBooks();
+
+    Page<Book> getBooks(Pageable pageable);
+
+    Book searchBookById(Long id);
 
     List<Book> getAllBooksSortedByPrice(String parameter);
 

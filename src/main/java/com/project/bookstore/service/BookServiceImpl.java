@@ -5,9 +5,13 @@ import com.project.bookstore.exception.BookAlreadyExistException;
 import com.project.bookstore.exception.BookNotFoundException;
 import com.project.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class BookServiceImpl implements BookService {
 
     @Autowired
@@ -32,6 +36,11 @@ public class BookServiceImpl implements BookService {
         }catch (Exception e){
             throw new BookAlreadyExistException("Book with title " + book.getTitle() + " already exist");
         }
+    }
+
+    @Override
+    public Page<Book> getBooks(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
@@ -100,8 +109,6 @@ public class BookServiceImpl implements BookService {
             oldBook.setDescription(newBook.getDescription());
             oldBook.setTitle(newBook.getTitle());
 
-
-
             return oldBook;
         } catch (Exception e) {
             throw new BookNotFoundException("Book with id " + id + " cannot be found");
@@ -135,20 +142,19 @@ public class BookServiceImpl implements BookService {
             }
 
             return filtered;
-
         }catch (Exception e){
             throw new RuntimeException();
         }
     }
 
-    private Book searchBookById(Long id) {
+    @Override
+    public Book searchBookById(Long id) {
         try {
             Optional<Book> foundBook = getAllBooks()
                     .stream()
                     .filter(book -> Objects.equals(book.getId(), id))
                     .findFirst();
 
-            // If a book with the given ID is found, return it; otherwise, return null
             return foundBook.orElse(null);
 
         } catch (Exception e) {
