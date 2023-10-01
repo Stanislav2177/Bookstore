@@ -21,10 +21,6 @@ public class CSVController {
     public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
         String message = "";
 
-        System.out.println("Received file upload request:");
-        System.out.println("Content-Type: " + file.getContentType());
-        System.out.println("Original Filename: " + file.getOriginalFilename());
-
 
         if (CSVHelper.hasCSVFormat(file)) {
             try {
@@ -42,8 +38,8 @@ public class CSVController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
 
-    @GetMapping("/tutorials")
-    public ResponseEntity<List<Book>> getAllTutorials() {
+    @GetMapping("/books")
+    public ResponseEntity<List<Book>> getAllBooks() {
         try {
             List<Book> tutorials = fileService.getAllTutorials();
 
