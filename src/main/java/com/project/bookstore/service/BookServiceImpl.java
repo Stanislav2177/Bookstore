@@ -161,4 +161,12 @@ public class BookServiceImpl implements BookService {
             throw new BookNotFoundException("Book with ID " + id + " not found");
         }
     }
+
+    @Override
+    public Book updateQuantity(Long id, int newQuantity){
+        Book book = searchBookById(id);
+        book.setQuantity(newQuantity);
+        repository.save(book);
+        return book;
+    }
 }

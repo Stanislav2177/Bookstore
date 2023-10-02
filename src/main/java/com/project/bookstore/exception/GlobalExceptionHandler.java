@@ -12,7 +12,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             RuntimeException.class,
-            BookNotFoundException.class
+            BookNotFoundException.class,
+            BookAlreadyExistException.class
     })
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse();

@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class CSVHelper {
     public static String TYPE = "text/csv";
-    static String[] HEADERs = { "ID", "Title", "Genre","Author", "Price" ,"Description"  };
+    static String[] HEADERs = { "ID", "Title", "Genre","Author", "Price" ,"Description","Quantity" };
     private static final Logger logger = LoggerFactory.getLogger(CSVHelper.class);
 
 
@@ -50,7 +50,8 @@ public class CSVHelper {
                         csvRecord.get("Genre"),
                         csvRecord.get("Author"),
                         Double.parseDouble(csvRecord.get("Price")),
-                        csvRecord.get("Description")
+                        csvRecord.get("Description"),
+                        Integer.parseInt(csvRecord.get("Quantity"))
                 );
 
                 tutorials.add(tutorial);

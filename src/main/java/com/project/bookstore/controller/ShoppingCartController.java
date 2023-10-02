@@ -1,4 +1,5 @@
 package com.project.bookstore.controller;
+import com.project.bookstore.dto.OrderDto;
 import com.project.bookstore.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,12 @@ public class ShoppingCartController {
     public ResponseEntity<?> calculateTotalPrice() {
         double totalPrice = shoppingCartService.calculateTotalPrice();
         return ResponseEntity.ok("Total Price: " + totalPrice);
+    }
+
+    @PostMapping("/finishOrder")
+    public ResponseEntity<OrderDto> finishOrder() {
+        OrderDto orderDto = shoppingCartService.finishOrder();
+        return ResponseEntity.ok(orderDto);
     }
 }
 

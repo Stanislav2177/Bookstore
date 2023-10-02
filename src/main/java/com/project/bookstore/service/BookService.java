@@ -27,6 +27,8 @@ public interface BookService {
 
     List<Book> getAllBooksSortedByGenre(String genre);
 
+    Book updateQuantity(Long id, int newQuantity);
+
 
 
 

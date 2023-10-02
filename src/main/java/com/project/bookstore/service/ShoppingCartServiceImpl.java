@@ -1,23 +1,27 @@
 package com.project.bookstore.service;
 
+import com.project.bookstore.dto.OrderDto;
 import com.project.bookstore.entity.Book;
 import com.project.bookstore.exception.BookNotFoundException;
+import com.project.bookstore.exception.BookOutOfStockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-    private final Map<Long, Integer> cartItems; // Map book IDs to quantities
+    private final Map<Long, Integer> cartItems;
+    private final Map<String, Integer> cartItemsWithNames;
 
     @Autowired
     private BookService bookService;
 
-    public ShoppingCartServiceImpl() {
+    public ShoppingCartServiceImpl( Map<String, Integer> cartItemsWithNames) {
+        this.cartItemsWithNames = cartItemsWithNames;
         this.cartItems = new HashMap<>();
     }
 
@@ -29,8 +33,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             throw new BookNotFoundException("Book with ID " + bookId + " not found");
         }
 
-        // Add to the cart or update quantity
         cartItems.put(bookId, cartItems.getOrDefault(bookId, 0) + quantity);
+        quantity = 0;
+        cartItemsWithNames.put(book.getTitle(), cartItems.getOrDefault(bookId, 0) + quantity);
     }
     @Override
     public void removeFromCart(Long bookId, int quantity) {
@@ -59,6 +64,45 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             }
         }
         return totalPrice;
+    }
+    @Override
+    public OrderDto finishOrder() {
+        OrderDto orderDto = new OrderDto();
+
+        boolean status = false;
+        int requiredQ = 0;
+
+        for (Long id : cartItems.keySet()) {
+            Book book = bookService.searchBookById(id);
+            requiredQ = cartItems.get(id);
+
+            status = validateOrderQuantity(book, requiredQ);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+        LocalDateTime parsedDateTime = LocalDateTime.parse(formattedDateTime, formatter);
+
+        orderDto.setDatetime(parsedDateTime);
+        orderDto.setOrderItems(cartItemsWithNames);
+        orderDto.setTotalAmount(calculateTotalPrice());
+
+        orderDto.setStatus(status);
+        return orderDto;
+    }
+
+    private boolean validateOrderQuantity(Book book, int requiredQ){
+        int oldQ = book.getQuantity();
+
+        if(oldQ >= requiredQ){
+            bookService.updateQuantity(book.getId(), oldQ - requiredQ);
+            return true;
+        }else {
+            throw new BookOutOfStockException("Book with title: " + book.getTitle() +
+                    " is out of stock, required quantity = " + requiredQ +
+                    ", but only " + book.getQuantity() + " in stock");
+        }
     }
 }
 

@@ -36,4 +36,7 @@ public class Book {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "quantity")
+    private int quantity;
+
 }
