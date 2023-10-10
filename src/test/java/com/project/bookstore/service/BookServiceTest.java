@@ -25,7 +25,7 @@ public class BookServiceTest {
 
     @Test
     void testAddBook(){
-        Book book = new Book(1L, "Title", "horror", "Author", 15.99, "No desc");
+        Book book = new Book(1L, "Title", "horror", "Author", 15.99, "No desc",0);
 
         when(dao.save(book)).thenReturn(book);
 
@@ -36,8 +36,8 @@ public class BookServiceTest {
 
     @Test
     void testSearchBookByTitle(){
-        Book book1 = new Book(1L, "Title", "horror", "Author", 15.99, "No desc");
-        Book book2 = new Book(1L, "Title2", "horror", "Author", 15.99, "No desc");
+        Book book1 = new Book(1L, "Title", "horror", "Author", 15.99, "No desc",0);
+        Book book2 = new Book(1L, "Title2", "horror", "Author", 15.99, "No desc",0 );
 
         List<Book> bookList = new ArrayList<>();
         bookList.add(book1);
@@ -54,9 +54,9 @@ public class BookServiceTest {
 
     @Test
     void testGetAllBookSortedByPriceMin(){
-        Book book1 = new Book(1L, "Title", "horror", "Author", 10.1, "No desc");
-        Book book2 = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc");
-        Book book3 = new Book(1L, "Title3", "horror", "Author", 8.0, "No desc");
+        Book book1 = new Book(1L, "Title", "horror", "Author", 10.1, "No desc",0 );
+        Book book2 = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc",0 );
+        Book book3 = new Book(1L, "Title3", "horror", "Author", 8.0, "No desc",0);
 
         List<Book> bookList = new ArrayList<>();
         bookList.add(book1);
@@ -73,9 +73,9 @@ public class BookServiceTest {
 
     @Test
     void testGetAllBookSortedByPriceMax(){
-        Book book1 = new Book(1L, "Title", "horror", "Author", 10.1, "No desc");
-        Book book2 = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc");
-        Book book3 = new Book(1L, "Title3", "horror", "Author", 8.0, "No desc");
+        Book book1 = new Book(1L, "Title", "horror", "Author", 10.1, "No desc",0);
+        Book book2 = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc",0);
+        Book book3 = new Book(1L, "Title3", "horror", "Author", 8.0, "No desc",0);
 
         List<Book> bookList = new ArrayList<>();
         bookList.add(book1);
@@ -93,8 +93,8 @@ public class BookServiceTest {
 
     @Test
     void testUpdateBookSuccess(){
-        Book existingBook = new Book(1L, "Title", "horror", "Author", 10.1, "No desc");
-        Book updatedBook = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc");
+        Book existingBook = new Book(1L, "Title", "horror", "Author", 10.1, "No desc",0);
+        Book updatedBook = new Book(1L, "Title2", "horror", "Author", 9.0, "No desc",0);
 
         when(dao.findById(anyLong())).thenReturn(Optional.of(existingBook));
         when(dao.save(updatedBook)).thenReturn(updatedBook);

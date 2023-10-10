@@ -163,10 +163,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book updateQuantity(Long id, int newQuantity){
+    public void updateQuantity(Long id, int newQuantity){
         Book book = searchBookById(id);
         book.setQuantity(newQuantity);
         repository.save(book);
-        return book;
     }
 }

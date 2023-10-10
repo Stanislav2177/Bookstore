@@ -1,9 +1,13 @@
 package com.project.bookstore.service;
 
 import com.project.bookstore.dto.OrderDto;
+import com.project.bookstore.dto.OrderMapper;
 import com.project.bookstore.entity.Book;
+import com.project.bookstore.entity.Order;
 import com.project.bookstore.exception.BookNotFoundException;
 import com.project.bookstore.exception.BookOutOfStockException;
+import com.project.bookstore.repository.BookRepository;
+import com.project.bookstore.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,12 @@ import java.util.*;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final Map<Long, Integer> cartItems;
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
     private final Map<String, Integer> cartItemsWithNames;
 
     @Autowired
@@ -89,6 +99,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         orderDto.setTotalAmount(calculateTotalPrice());
 
         orderDto.setStatus(status);
+
+        if(status){
+            Order orderEntity = orderMapper.mapToEntity(orderDto);
+            orderRepository.save(orderEntity); // Assuming you have an order repository
+
+            // You can also clear the cart if needed
+            cartItems.clear();
+        }
         return orderDto;
     }
 
