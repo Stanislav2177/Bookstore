@@ -1,16 +1,21 @@
 package com.project.bookstore.service;
 
 import com.project.bookstore.dto.OrderDto;
+import com.project.bookstore.dto.OrderItemProjectionDto;
 import com.project.bookstore.dto.OrderMapper;
 import com.project.bookstore.entity.Book;
 import com.project.bookstore.entity.Order;
 import com.project.bookstore.exception.BookNotFoundException;
 import com.project.bookstore.exception.BookOutOfStockException;
+import com.project.bookstore.exception.NoFinishedOrdersException;
 import com.project.bookstore.repository.BookRepository;
+import com.project.bookstore.repository.OrderDetailsRepository;
 import com.project.bookstore.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -24,6 +29,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    OrderDetailsRepository orderItemInfoRepository;
 
     private final Map<String, Integer> cartItemsWithNames;
 
@@ -34,6 +41,25 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         this.cartItemsWithNames = cartItemsWithNames;
         this.cartItems = new HashMap<>();
     }
+
+    @Override
+    public List<OrderItemProjectionDto> customSelect() {
+        List<OrderItemProjectionDto> orderItemProjectionDtos = orderItemInfoRepository.getCustomProcedure();
+
+
+        if(orderItemProjectionDtos.isEmpty()){
+            throw new NoFinishedOrdersException("No orders which to be presented");
+        }
+
+        return orderItemProjectionDtos;
+
+    }
+
+    private String getFormattedOrderDatetime(LocalDateTime orderDatetime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        return orderDatetime.format(formatter);
+    }
+
 
 
     @Override
@@ -89,6 +115,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             status = validateOrderQuantity(book, requiredQ);
         }
 
+        //Format LocalDateTime to custom patter
+        //before saving it to the database
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = now.format(formatter);
@@ -96,15 +124,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         orderDto.setDatetime(parsedDateTime);
         orderDto.setOrderItems(cartItemsWithNames);
-        orderDto.setTotalAmount(calculateTotalPrice());
+
+        System.out.println(orderDto.toString());
+
+        // Format totalAmount to two decimal places
+        //before saving it to the database
+        double totalAmount = calculateTotalPrice();
+        Locale locale = new Locale("en", "US"); // Use the appropriate locale for your formatting
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+        DecimalFormat decimalFormat = new DecimalFormat("0.00", symbols);
+        String formattedTotalAmount = decimalFormat.format(totalAmount);
+        orderDto.setTotalAmount(Double.parseDouble(formattedTotalAmount));
 
         orderDto.setStatus(status);
 
         if(status){
             Order orderEntity = orderMapper.mapToEntity(orderDto);
-            orderRepository.save(orderEntity); // Assuming you have an order repository
+            orderRepository.save(orderEntity);
 
-            // You can also clear the cart if needed
             cartItems.clear();
         }
         return orderDto;

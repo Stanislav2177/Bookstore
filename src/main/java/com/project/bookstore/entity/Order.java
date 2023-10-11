@@ -14,11 +14,11 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order")
+
+@Table(name = "orders")
 public class Order {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -36,5 +36,6 @@ public class Order {
 
     @Column(name = "status")
     private boolean status;
+
 
 }

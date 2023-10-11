@@ -1,9 +1,12 @@
 package com.project.bookstore.controller;
 import com.project.bookstore.dto.OrderDto;
+import com.project.bookstore.dto.OrderItemProjectionDto;
 import com.project.bookstore.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -22,9 +25,21 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/add/{bookId}")
-    public ResponseEntity<?> addToCart(@PathVariable Long bookId, @RequestParam int quantity) {
+    public ResponseEntity<?> addToCart(@PathVariable Long bookId,
+                                       @RequestParam int quantity) {
         shoppingCartService.addToCart(bookId, quantity);
         return ResponseEntity.ok("Item added to cart successfully");
+    }
+
+
+
+    @GetMapping("/order-details")
+    public ResponseEntity<List<OrderItemProjectionDto>> getOrderDetails(){
+        List<OrderItemProjectionDto> orderItemProjectionDtos = shoppingCartService.customSelect();
+
+        System.out.println(orderItemProjectionDtos.toString());
+
+        return ResponseEntity.ok(shoppingCartService.customSelect());
     }
 
     @PostMapping("/remove/{bookId}")
