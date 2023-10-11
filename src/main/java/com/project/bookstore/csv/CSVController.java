@@ -21,7 +21,6 @@ public class CSVController {
     public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
         String message = "";
 
-
         if (CSVHelper.hasCSVFormat(file)) {
             try {
                 fileService.save(file);

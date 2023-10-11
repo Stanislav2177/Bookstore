@@ -8,7 +8,6 @@ import com.project.bookstore.entity.Order;
 import com.project.bookstore.exception.BookNotFoundException;
 import com.project.bookstore.exception.BookOutOfStockException;
 import com.project.bookstore.exception.NoFinishedOrdersException;
-import com.project.bookstore.repository.BookRepository;
 import com.project.bookstore.repository.OrderDetailsRepository;
 import com.project.bookstore.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.util.*;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
-
     private final Map<Long, Integer> cartItems;
     @Autowired
     private OrderMapper orderMapper;
@@ -45,7 +43,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public List<OrderItemProjectionDto> customSelect() {
         List<OrderItemProjectionDto> orderItemProjectionDtos = orderItemInfoRepository.getCustomProcedure();
-
 
         if(orderItemProjectionDtos.isEmpty()){
             throw new NoFinishedOrdersException("No orders which to be presented");
@@ -124,8 +121,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         orderDto.setDatetime(parsedDateTime);
         orderDto.setOrderItems(cartItemsWithNames);
-
-        System.out.println(orderDto.toString());
 
         // Format totalAmount to two decimal places
         //before saving it to the database

@@ -16,12 +16,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private final BookRepository repository;
-
-
     public BookServiceImpl(BookRepository repository) {
         this.repository = repository;
     }
-
     @Override
     public Book addBook(Book book) {
         try{
@@ -37,7 +34,6 @@ public class BookServiceImpl implements BookService {
             throw new BookAlreadyExistException("Book with title " + book.getTitle() + " already exist");
         }
     }
-
     @Override
     public Page<Book> getBooks(Pageable pageable) {
         return repository.findAll(pageable);
