@@ -9,7 +9,7 @@ Before you begin, ensure you have met the following requirements:
 - Java 8 or later
 - Spring Boot
 - Maven or Gradle for building the project
-- [Your database system and connection details, if applicable]
+- MySQL
 
 ## Installation
 
