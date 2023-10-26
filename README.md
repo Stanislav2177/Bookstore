@@ -35,6 +35,11 @@ GET /api/cart/totalPrice: Calculate the total price of the items in the shopping
 
 POST /api/cart/finishOrder: Finish and place an order.
 
+# CSV API endpoint 
+APIs which rely on those two endpoints
+GET /api/csv/books: View all books which are saved to database.
+POST /api/csv/upload: Upload file.csv and then store it in database.
+
 # Logging
 Logging is integrated into the application using SLF4J and Logback. Detailed logs help with debugging and monitoring the application's behavior. Log messages are available in the console output.
 
