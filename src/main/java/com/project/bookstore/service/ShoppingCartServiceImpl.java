@@ -102,6 +102,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public OrderDto finishOrder() {
         OrderDto orderDto = new OrderDto();
 
+        orderDto.setOrderItems(new HashMap<>());
+
         boolean status = false;
         int requiredQ = 0;
 
@@ -125,7 +127,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // Format totalAmount to two decimal places
         //before saving it to the database
         double totalAmount = calculateTotalPrice();
-        Locale locale = new Locale("en", "US"); // Use the appropriate locale for your formatting
+        Locale locale = new Locale("en", "US");
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
         DecimalFormat decimalFormat = new DecimalFormat("0.00", symbols);
         String formattedTotalAmount = decimalFormat.format(totalAmount);

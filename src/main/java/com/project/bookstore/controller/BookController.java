@@ -1,5 +1,6 @@
 package com.project.bookstore.controller;
 
+import com.project.bookstore.dto.BookAndImageDto;
 import com.project.bookstore.entity.Book;
 import com.project.bookstore.exception.BookAlreadyExistException;
 import com.project.bookstore.exception.BookNotFoundException;
@@ -47,10 +48,20 @@ public class BookController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
+//    @GetMapping("/all")
+//    public ResponseEntity<List<Book>> listBooks() {
+//        logger.info("Received a request to list all books.");
+//        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+//    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Book>> listBooks() {
         logger.info("Received a request to list all books.");
-        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+
+        List<Book> allBooks = bookService.getAllBooks();
+
+
+        return new ResponseEntity<>(allBooks, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -96,21 +107,24 @@ public class BookController {
     }
 
     @GetMapping("/sorted")
-    public ResponseEntity<String> getAllBooksSortedByPrice(
+    public ResponseEntity<List<Book>> getAllBooksSortedByPrice(
             @RequestParam(name = "parameter") String parameter) {
         logger.info("Received a request to retrieve and sort books by price.");
+
         try {
             List<Book> sortedBooks = bookService.getAllBooksSortedByPrice(parameter);
-            return ResponseEntity.ok(sortedBooks.toString());
+            return ResponseEntity.ok(sortedBooks);
         } catch (IllegalArgumentException e) {
             logger.error("Invalid parameter for sorting: {}", parameter);
-            return ResponseEntity.badRequest()
-                    .body("Invalid parameter. Use 'min' or 'max'.");
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body("Invalid parameter for sorting: " + e.getMessage());
         } catch (Exception e) {
             logger.error("Failed to retrieve and sort books: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to retrieve and sort books: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Failed to retrieve and sort books: " + e.getMessage());
         }
+
+        return null;
     }
 
     @PutMapping("/{id}")
@@ -156,5 +170,10 @@ public class BookController {
             logger.error("Failed to retrieve and sort books by genre: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @GetMapping("/receive/BookAndImage")
+    public ResponseEntity<List<BookAndImageDto>> receiveBookAndImage(){
+        return ResponseEntity.ok(bookService.getAllBooksPlusImages());
     }
 }

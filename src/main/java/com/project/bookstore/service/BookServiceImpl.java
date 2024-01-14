@@ -1,6 +1,9 @@
 package com.project.bookstore.service;
 
+import com.project.bookstore.dto.BookAndImageDto;
 import com.project.bookstore.entity.Book;
+//import com.project.bookstore.entity.ImageBook;
+import com.project.bookstore.entity.BookImage;
 import com.project.bookstore.exception.BookAlreadyExistException;
 import com.project.bookstore.exception.BookNotFoundException;
 import com.project.bookstore.repository.BookRepository;
@@ -16,8 +19,12 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private final BookRepository repository;
-    public BookServiceImpl(BookRepository repository) {
+    private final BookImageService bookImageService;
+
+
+    public BookServiceImpl(BookRepository repository, BookImageService imageBookService) {
         this.repository = repository;
+        this.bookImageService = imageBookService;
     }
     @Override
     public Book addBook(Book book) {
@@ -25,6 +32,9 @@ public class BookServiceImpl implements BookService {
             List<Book> allBooks = getAllBooks();
 
             if(!allBooks.contains(book)){
+//                System.out.println(book.getImageBook());
+//                imageBookService.downloadImage(book.getImageBook().toString());
+
                 repository.save(book);
                 return book;
             }
@@ -68,6 +78,38 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAllBooks() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<BookAndImageDto> getAllBooksPlusImages(){
+        List<Book> books = repository.findAll();
+        List<BookAndImageDto> all = new ArrayList<>();
+        BookAndImageDto result = new BookAndImageDto();
+
+        System.out.println(books.size());
+
+        for (Book book : books) {
+            BookImage bookImage =
+                    bookImageService.receiveImageByTitle(book.getTitle());
+            System.out.println("bookimage " + bookImage);
+            System.out.println("book " + book.getTitle());
+
+            if(bookImage != null){
+                result.setTitle(book.getTitle());
+                result.setPrice(book.getPrice());
+                result.setDescription(book.getDescription());
+                result.setAuthor(book.getAuthor());
+                result.setGenre(book.getGenre());
+                result.setQuantity(book.getQuantity());
+                result.setEncoded(bookImage.getEncoded());
+                all.add(result);
+            }
+
+        }
+
+        System.out.println(all.size());
+
+        return all;
     }
 
     @Override

@@ -39,4 +39,14 @@ public class Book {
     @Column(name = "quantity")
     private int quantity;
 
+
+
+    public Book(String title, String genre, String author, Double price, String description, int quantity) {
+        this.title = title;
+        this.genre = genre;
+        this.author = author;
+        this.price = price;
+        this.description = description;
+        this.quantity = quantity;
+    }
 }

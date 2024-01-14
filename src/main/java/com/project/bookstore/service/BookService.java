@@ -1,5 +1,6 @@
 package com.project.bookstore.service;
 
+import com.project.bookstore.dto.BookAndImageDto;
 import com.project.bookstore.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public interface BookService {
 
     void updateQuantity(Long id, int newQuantity);
 
-
+    List<BookAndImageDto> getAllBooksPlusImages();
 
 
 
